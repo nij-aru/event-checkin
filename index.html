@@ -8,13 +8,13 @@
   <h2>イベント受付</h2>
 
   <form id="checkinForm">
-    <label>名前を選択（複数可）：</label><br>
+    <label for="nameSelect">名前を選択（複数可）：</label><br>
     <select id="nameSelect" multiple size="10">
-      <option value="佐藤">佐藤</option>
+      <option value="佐藤 太郎">佐藤 太郎</option>
       <option value="鈴木 花子">鈴木 花子</option>
       <option value="田中 次郎">田中 次郎</option>
       <option value="山本 美咲">山本 美咲</option>
-      <!-- スプレッドシートのA列と一致する名前を必要に応じて追加 -->
+      <!-- スプレッドシートのA列と一致する名前を追加 -->
     </select><br><br>
 
     <button type="submit">確認して送信</button>
@@ -37,5 +37,29 @@
         return;
       }
 
+      console.log("選択された名前:", selected); // デバッグ用ログ
+
       const confirmMsg = "以下の名前で受付します：\n" + selected.join("\n");
-      if (!confirm(confirmMsg)) return;
+      const confirmed = confirm(confirmMsg);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbyMOBqxO4vzYWqqUE2gCkKVbUlZz332cUfmJXc7fNdx251xEetCQrg6k_HeK4jpnvYM/exec", {
+          method: "POST",
+          body: JSON.stringify({ names: selected }),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (res.ok) {
+          resultDiv.textContent = "受付が完了しました。ありがとうございます！";
+        } else {
+          resultDiv.textContent = "サーバーエラーが発生しました。";
+        }
+      } catch (error) {
+        console.error("通信エラー:", error);
+        resultDiv.textContent = "通信エラーが発生しました。";
+      }
+    });
+  </script>
+</body>
+</html>
