@@ -38,7 +38,7 @@
       const confirmMsg = "以下の名前で受付します：\n" + selected.join("\n");
       if (!confirm(confirmMsg)) return;
 
-      const res = await fetch("https://script.google.com/macros/library/d/1ExDBoxLO7PD132D5ITevHmQSxTI4QHdVGSZHmP5vWUQ3Dj4ZCHJxd392/1", {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbwDBsf7kuvNlZi7-dHLXTiDWbngyTio3izf68gxJBbPnz_ElwJLACIS6eFGw3qpJGLsYA/exec", {
         method: "POST",
         body: JSON.stringify({ names: selected }),
         headers: { "Content-Type": "application/json" }
