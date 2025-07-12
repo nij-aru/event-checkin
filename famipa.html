@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>イベント受付</title>
+</head>
+<body>
+  <h2>イベント受付</h2>
+
+  <form id="checkinForm">
+    <label>名前を選択（複数可）：</label><br>
+    <select id="nameSelect" multiple size="5">
+      <option value="佐藤 太郎">佐藤 太郎</option>
+      <option value="鈴木 花子">鈴木 花子</option>
+      <!-- 必要に応じて追加 -->
+    </select><br><br>
+
+    <button type="submit">確認して送信</button>
+  </form>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script>
+    const form = document.getElementById("checkinForm");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const selected = Array.from(document.getElementById("nameSelect").selectedOptions)
+                            .map(option => option.value);
+
+      if (selected.length === 0) {
+        alert("名前を選択してください");
+        return;
+      }
+
+      const confirmMsg = "以下の名前で受付します：\n" + selected.join("\n");
+      if (!confirm(confirmMsg)) return;
+
+      const res = await fetch("https://script.google.com/macros/s/AKfycbxVXmPYQE5ttUFw-jJI-HxPg9lU4tQl_glPALXmAqLNDwDObDAVw3YcTa-1lyOxmEy0Ww/exec", {
+        method: "POST",
+        body: JSON.stringify({ names: selected }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (res.ok) {
+        resultDiv.textContent = "受付が完了しました。ありがとうございます！";
+      } else {
+        resultDiv.textContent = "エラーが発生しました。";
+      }
+    });
+  </script>
+</body>
+</html>
